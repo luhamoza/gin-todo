@@ -5,16 +5,13 @@ import (
 
 	"github.com/luhamoza/gin-todo/db"
 )
-
 type Todo struct {
 	ID       uint32 `json:"id"` 
 	Title     string `json:"title"`
 	Completed bool   `json:"completed"`
 }
 
-// var todoList []Todo
-
-func (t Todo) Save() error  {
+func (t Todo) CreateTodo() error  {
 	sqlStmt := `INSERT INTO todos (title,completed) VALUES (?,?)`
 	_,err := db.SqliteDB.Exec(sqlStmt,t.Title, t.Completed)
 	if err != nil {
@@ -38,4 +35,12 @@ func GetAllTodos() ([]Todo, error) {
 		todoList = append(todoList, todo)
 	}
 	return todoList, nil
+}
+func GetTodoByID(id uint64) (Todo, error) {
+	var todo Todo
+	err := db.SqliteDB.QueryRow("SELECT id,title,completed FROM todos WHERE id = ?", id).Scan((&todo.ID),(&todo.Title),(&todo.Completed))
+	if err != nil {
+		return todo, fmt.Errorf("could not get todo: %v", err)
+	}
+	return todo, nil
 }
