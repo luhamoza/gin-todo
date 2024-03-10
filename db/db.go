@@ -21,9 +21,10 @@ func InitDb() {
 
 	createTodoTable()
 }
+
 func createTodoTable() {
 	sqlStmt := `CREATE TABLE IF NOT EXISTS todos (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		title TEXT NOT NULL,
 		completed BOOLEAN NOT NULL DEFAULT 0)`
 	_, err := SqliteDB.Exec(sqlStmt)

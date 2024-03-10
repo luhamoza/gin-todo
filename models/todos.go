@@ -1,32 +1,41 @@
 package models
 
-import "github.com/luhamoza/gin-todo/db"
+import (
+	"fmt"
+
+	"github.com/luhamoza/gin-todo/db"
+)
 
 type Todo struct {
-	ID        int64
+	ID       uint32 `json:"id"` 
 	Title     string `json:"title"`
 	Completed bool   `json:"completed"`
 }
 
-var todoList []Todo
+// var todoList []Todo
 
-func (t Todo) Save() error {
+func (t Todo) Save() error  {
 	sqlStmt := `INSERT INTO todos (title,completed) VALUES (?,?)`
-	stmt, err := db.SqliteDB.Prepare(sqlStmt)
+	_,err := db.SqliteDB.Exec(sqlStmt,t.Title, t.Completed)
 	if err != nil {
-		panic("Could not prepare statement")
-		return err
+		return fmt.Errorf("could not execute todo: %v", err)
 	}
-	defer stmt.Close()
-	result, err := stmt.Exec(t.Title, t.Completed)
-	if err != nil {
-		panic("Could not execute statement")
-		return err
-	}
-	t.ID, err = result.LastInsertId()
-	return err
+	return err	
 }
 
-func GetAllTodos() []Todo {
-	return todoList
+func GetAllTodos() ([]Todo, error) {
+	rows, err := db.SqliteDB.Query("SELECT id,title,completed FROM todos")
+	if err != nil {
+		return nil, fmt.Errorf("could not get todos: %v", err)
+	}
+	var todoList []Todo
+	for rows.Next() {
+		var todo Todo
+		err := rows.Scan((&todo.ID),(&todo.Title),(&todo.Completed))
+		if err != nil {
+			return nil, fmt.Errorf("could not get todos: %v", err)
+		}
+		todoList = append(todoList, todo)
+	}
+	return todoList, nil
 }
