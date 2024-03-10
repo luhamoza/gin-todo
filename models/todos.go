@@ -2,9 +2,8 @@ package models
 
 type Todo struct {
 	ID          int
-	Title       string
+	Title       string 
 	Status      bool
-	Description string
 }
 
 var todoList = []Todo{}

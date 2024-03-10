@@ -4,10 +4,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/luhamoza/gin-todo/db"
 	"github.com/luhamoza/gin-todo/models"
 )
 
 func main(){
+	db.InitDb()
 	server := gin.Default()
 	server.GET("/todos",getTodos)
 	server.POST("/todos",createTodos)
@@ -25,5 +27,6 @@ func createTodos(context *gin.Context){
 		return
 	}
 	todo.ID = 1
+	todo.Save()	
 	context.JSON(http.StatusCreated,gin.H{"msg":"Todo created","todo":todo})
 }
