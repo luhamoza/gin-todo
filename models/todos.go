@@ -54,3 +54,12 @@ func (t Todo) UpdateTodoByID() error  {
 	}
 	return err	
 }
+
+func (t Todo) DeleteTodoByID() error {
+	sqlStmt := `DELETE FROM todos WHERE id = ?`
+	_,err := db.SqliteDB.Exec(sqlStmt,t.ID)
+	if err != nil {
+		return fmt.Errorf("could not execute todo: %v", err)
+	}
+	return err
+}
