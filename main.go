@@ -1,17 +1,24 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/luhamoza/gin-todo/db"
+	"github.com/luhamoza/gin-todo/middleware"
 	"github.com/luhamoza/gin-todo/routes"
 )
 
 func main() {
 	db.InitDb()
+
 	server := gin.Default()
-	fmt.Println("here")
-	routes.RegisterRoutes(server)
-	server.Run(":3000")
+	server.Use(middleware.CORSMiddleware())
+
+	server.GET("/todos", routes.GetTodos)
+	server.GET("/todos/:id",routes.GetTodoByID)
+	server.POST("/todos", routes.CreateTodos)
+	server.PUT("/todos/:id", routes.UpdateTodoByID)
+	server.DELETE("/todos/:id",routes.DeleteTodoByID)
+	
+	server.Run(":3001")
 }
+

@@ -9,7 +9,7 @@ import (
 	"github.com/luhamoza/gin-todo/models"
 )
 
-func getTodos(context *gin.Context) {
+func GetTodos(context *gin.Context) {
 	todos, err := models.GetAllTodos()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"msg": "Could not get todos"})
@@ -18,7 +18,7 @@ func getTodos(context *gin.Context) {
 	context.JSON(http.StatusOK, todos)
 }
 
-func getTodoByID(context *gin.Context) {
+func GetTodoByID(context *gin.Context) {
 	todoId,err := strconv.ParseUint(  context.Param("id"),10,32)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"msg": "Could not parse id"})
@@ -32,7 +32,7 @@ func getTodoByID(context *gin.Context) {
 	context.JSON(http.StatusOK, todo)
 }
 
-func createTodos(context *gin.Context) {
+func CreateTodos(context *gin.Context) {
 	var todo models.Todo
 	err := context.ShouldBindJSON(&todo)
 	if err != nil {
@@ -48,7 +48,7 @@ func createTodos(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"msg": "Todo created", "todo": todo})
 }
 
-func updateTodoByID (context *gin.Context) {
+func UpdateTodoByID (context *gin.Context) {
 	todoId,err := strconv.ParseUint(  context.Param("id"),10,32)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"msg": "Could not parse id"})
@@ -74,7 +74,7 @@ func updateTodoByID (context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"msg": "Todo updated"})
 }
 
-func deleteTodoByID (context *gin.Context) {
+func DeleteTodoByID (context *gin.Context) {
 	todoId, err := strconv.ParseUint(context.Param("id"), 10, 32)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"msg": "Could not parse id"})
